@@ -1,6 +1,6 @@
 package com.example.bookmanager.security;
 
-import com.example.bookmanager.UserRepository;
+import com.example.bookmanager.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
