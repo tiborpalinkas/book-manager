@@ -4,7 +4,7 @@ import com.example.bookmanager.entity.Role;
 import com.example.bookmanager.repository.RoleRepository;
 import com.example.bookmanager.repository.UserRepository;
 import com.example.bookmanager.entity.User;
-import com.example.bookmanager.model.AuthenticationRequest;
+import com.example.bookmanager.model.RegistrationRequest;
 import com.example.bookmanager.model.AuthenticationResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,7 +25,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public AuthenticationResponse authenticate(RegistrationRequest request) {
         User user = userRepository.findByUsername(request.username())
                         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         authenticationManager.authenticate(
@@ -35,7 +35,7 @@ public class AuthenticationService {
         return new AuthenticationResponse(token);
     }
 
-    public void register(AuthenticationRequest request) {
+    public void register(RegistrationRequest request) {
         if (userRepository.findByUsername(request.username()).isPresent()) {
             throw new IllegalStateException("User already exists");
         }
