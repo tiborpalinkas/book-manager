@@ -1,14 +1,16 @@
 package com.example.bookmanager.model;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RegistrationRequest {
 
     @NotEmpty(message = "Firstname is mandatory")
@@ -17,9 +19,11 @@ public class RegistrationRequest {
     @NotEmpty(message = "Lastname is mandatory")
     @NotBlank(message = "Lastname is mandatory")
     private String lastname;
+    @Email(message = "Email is not formatted")
     @NotEmpty(message = "Email is mandatory")
     @NotBlank(message = "Email is mandatory")
     private String email;
+    @Size(min = 8, message = "Password should be at least 8 characters long")
     @NotEmpty(message = "Password is mandatory")
     @NotBlank(message = "Password is mandatory")
     private String password;

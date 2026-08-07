@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:bookmanager;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: false
+application:
+  security:
+    jwt:
+      secret-key: /7L+BZBj0TcqzJDo4KB81Za3h748Z+WeFw4x+DXyzhw=
+      expiration: 86400000
+  mailing:
+    frontend:
+      activation-url: http://localhost:4200/activate-account
