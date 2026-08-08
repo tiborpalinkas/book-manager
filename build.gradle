@@ -17,6 +17,20 @@ repositories {
 	mavenCentral()
 }
 
+sourceSets {
+	integrationTest {
+		compileClasspath += sourceSets.main.output
+		runtimeClasspath += sourceSets.main.output
+	}
+}
+
+configurations {
+	integrationTestImplementation.extendsFrom testImplementation
+	integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
+	integrationTestCompileOnly.extendsFrom testCompileOnly
+	integrationTestAnnotationProcessor.extendsFrom testAnnotationProcessor
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -44,4 +58,24 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+tasks.register('integrationTest', Test) {
+	description = 'Runs integration tests (*IT)'
+	group = 'verification'
+	useJUnitPlatform()
+
+	testClassesDirs = sourceSets.integrationTest.output.classesDirs
+	classpath = sourceSets.integrationTest.runtimeClasspath
+
+	filter {
+		includeTestsMatching '*IT'
+		failOnNoMatchingTests = false
+	}
+
+	shouldRunAfter tasks.named('test')
+}
+
+tasks.named('check') {
+	dependsOn tasks.named('integrationTest')
 }

@@ -5,11 +5,10 @@ import com.example.bookmanager.repository.RoleRepository;
 import com.example.bookmanager.repository.TokenRepository;
 import com.example.bookmanager.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -18,19 +17,19 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.client.RestTestClient;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestRestTemplate
 @ActiveProfiles("test")
 public abstract class AbstractIntegrationTest {
 
-    @LocalServerPort
-    protected int port;
+    protected static  final String USER_ROLE = "USER";
 
     @Autowired
-    protected TestRestTemplate rest;
+    protected RestTestClient client;
     @Autowired
     protected UserRepository userRepository;
     @Autowired
@@ -49,17 +48,7 @@ public abstract class AbstractIntegrationTest {
         tokenRepository.deleteAll();
         userRepository.deleteAll();
 
-        roleRepository.findByName("USER")
-                .orElseGet(() -> roleRepository.save(Role.builder().name("USER").build()));
-    }
-
-    protected String url(String path) {
-        return "http://localhost:" + port + "/api/v1" + path;
-    }
-
-    protected HttpEntity<String> json(String body) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        return new HttpEntity<>(body, headers);
+        roleRepository.findByName(USER_ROLE)
+                .orElseGet(() -> roleRepository.save(Role.builder().name(USER_ROLE).build()));
     }
 }
