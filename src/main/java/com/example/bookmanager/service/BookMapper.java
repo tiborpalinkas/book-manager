@@ -1,8 +1,10 @@
 package com.example.bookmanager.service;
 
 import com.example.bookmanager.entity.Book;
+import com.example.bookmanager.entity.BookTransactionHistory;
 import com.example.bookmanager.model.BookRequest;
 import com.example.bookmanager.model.BookResponse;
+import com.example.bookmanager.model.BorrowedBookResponse;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,6 +33,18 @@ public class BookMapper {
                 .shareable(book.isShareable())
                 .owner(book.getOwner().getFullName())
                 //.cover() TODO: Implement this later
+                .build();
+    }
+
+    public BorrowedBookResponse toBorrowedBookResponse(BookTransactionHistory history) {
+        return BorrowedBookResponse.builder()
+                .id(history.getBook().getId())
+                .title(history.getBook().getTitle())
+                .authorName(history.getBook().getAuthorName())
+                .isbn(history.getBook().getIsbn())
+                .rate(history.getBook().getRate())
+                .returned(history.isReturned())
+                .returnApproved(history.isReturnApproved())
                 .build();
     }
 }

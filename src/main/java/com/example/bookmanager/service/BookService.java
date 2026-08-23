@@ -3,10 +3,14 @@ package com.example.bookmanager.service;
 import com.example.bookmanager.common.BookSpecification;
 import com.example.bookmanager.common.PageResponse;
 import com.example.bookmanager.entity.Book;
+import com.example.bookmanager.entity.BookTransactionHistory;
 import com.example.bookmanager.entity.User;
+import com.example.bookmanager.exception.OperationNotPermittedException;
 import com.example.bookmanager.model.BookRequest;
 import com.example.bookmanager.model.BookResponse;
+import com.example.bookmanager.model.BorrowedBookResponse;
 import com.example.bookmanager.repository.BookRepository;
+import com.example.bookmanager.repository.BookTransactionRepositoryHistory;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,12 +21,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final BookTransactionRepositoryHistory bookTransactionRepositoryHistory;
     private final BookMapper bookMapper;
 
     public Integer save(BookRequest request, Authentication connectedUser) {
@@ -73,5 +79,67 @@ public class BookService {
                 books.isFirst(),
                 books.isLast()
         );
+    }
+
+    public PageResponse<BorrowedBookResponse> findAllBorrowedBooks(int page, int size, Authentication connectedUser) {
+        User user = (User) connectedUser.getPrincipal();
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
+        Page<BookTransactionHistory> allBorrowedBooks = bookTransactionRepositoryHistory
+                .findAllBorrowedBooks(pageable, user.getId());
+        List<BorrowedBookResponse> bookResponse = allBorrowedBooks.stream()
+                .map(bookMapper::toBorrowedBookResponse)
+                .toList();
+        return new PageResponse<>(
+                bookResponse,
+                allBorrowedBooks.getNumber(),
+                allBorrowedBooks.getSize(),
+                allBorrowedBooks.getTotalElements(),
+                allBorrowedBooks.getTotalPages(),
+                allBorrowedBooks.isFirst(),
+                allBorrowedBooks.isLast()
+        );
+    }
+
+    public Integer updateShareableStatus(Integer bookId, Authentication connectedUser) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new EntityNotFoundException("No book found with id: " + bookId));
+        User user = (User) connectedUser.getPrincipal();
+        if (!Objects.equals(book.getOwner().getId(), user.getId())) {
+            throw new OperationNotPermittedException("You cannot update other user's book");
+        }
+        book.setShareable(!book.isShareable());
+        bookRepository.save(book);
+        return bookId;
+    }
+
+    public PageResponse<BorrowedBookResponse> findAllReturnedBooks(int page, int size, Authentication connectedUser) {
+        User user = (User) connectedUser.getPrincipal();
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
+        Page<BookTransactionHistory> allReturnedBooks = bookTransactionRepositoryHistory
+                .findAllReturnedBooks(pageable, user.getId());
+        List<BorrowedBookResponse> bookResponse = allReturnedBooks.stream()
+                .map(bookMapper::toBorrowedBookResponse)
+                .toList();
+        return new PageResponse<>(
+                bookResponse,
+                allReturnedBooks.getNumber(),
+                allReturnedBooks.getSize(),
+                allReturnedBooks.getTotalElements(),
+                allReturnedBooks.getTotalPages(),
+                allReturnedBooks.isFirst(),
+                allReturnedBooks.isLast()
+        );
+    }
+
+    public Integer updateArchivedStatus(Integer bookId, Authentication connectedUser) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new EntityNotFoundException("No book found with id: " + bookId));
+        User user = (User) connectedUser.getPrincipal();
+        if (!Objects.equals(book.getOwner().getId(), user.getId())) {
+            throw new OperationNotPermittedException("You cannot update other user's book");
+        }
+        book.setArchived(!book.isArchived());
+        bookRepository.save(book);
+        return bookId;
     }
 }
