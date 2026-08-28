@@ -1,5 +1,6 @@
 package com.example.bookmanager.service;
 
+import com.example.bookmanager.common.FileUtils;
 import com.example.bookmanager.entity.Book;
 import com.example.bookmanager.entity.BookTransactionHistory;
 import com.example.bookmanager.model.BookRequest;
@@ -32,7 +33,7 @@ public class BookMapper {
                 .archived(book.isArchived())
                 .shareable(book.isShareable())
                 .owner(book.getOwner().getFullName())
-                .cover(FileUtils.readFileFromLocation(book.getBookCover())) TODO: Implement this later
+                .cover(FileUtils.readFileFromLocation(book.getBookCover()))
                 .build();
     }
 
