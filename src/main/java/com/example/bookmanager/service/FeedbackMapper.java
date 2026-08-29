@@ -3,6 +3,9 @@ package com.example.bookmanager.service;
 import com.example.bookmanager.entity.Book;
 import com.example.bookmanager.entity.Feedback;
 import com.example.bookmanager.model.FeedbackRequest;
+import com.example.bookmanager.model.FeedbackResponse;
+
+import java.util.Objects;
 
 public class FeedbackMapper {
 
@@ -17,5 +20,14 @@ public class FeedbackMapper {
                         .build()
                 )
                 .build();
+    }
+
+    public FeedbackResponse toFeedbackResponse(Feedback f, Integer userId) {
+        return FeedbackResponse.builder()
+                .note(f.getNote())
+                .comment(f.getComment())
+                .ownFeedback(Objects.equals(f.getCreatedBy(), userId))
+                .build();
+
     }
 }

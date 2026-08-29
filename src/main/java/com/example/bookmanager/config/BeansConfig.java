@@ -1,4 +1,4 @@
-package com.example.bookmanager.security;
+package com.example.bookmanager.config;
 
 import com.example.bookmanager.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

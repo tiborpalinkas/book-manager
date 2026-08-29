@@ -1,4 +1,4 @@
-package com.example.bookmanager.security;
+package com.example.bookmanager.config;
 
 import com.example.bookmanager.entity.User;
 import org.springframework.data.domain.AuditorAware;
