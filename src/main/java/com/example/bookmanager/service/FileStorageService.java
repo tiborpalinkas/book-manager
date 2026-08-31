@@ -53,6 +53,7 @@ public class FileStorageService {
         } catch (IOException e) {
             log.error("File was not saved", e);
         }
+        return null;
     }
 
     private String getFileExtension(String fileName) {

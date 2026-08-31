@@ -182,7 +182,7 @@ public class BookService {
                 .findByBookIdAndUserId(bookId, user.getId())
                 .orElseThrow(() -> new OperationNotPermittedException("You did not borrow this book"));
         bookTransactionHistory.setReturned(true);
-        return bookTransactionHistory.save(bookTransactionHistory).getId();
+        return transactionHistoryRepository.save(bookTransactionHistory).getId();
     }
 
     public Integer approveReturnBorrowBook(Integer bookId, Authentication connectedUser) {
@@ -196,7 +196,7 @@ public class BookService {
             throw new OperationNotPermittedException("You cannot borrow or return your own book.");
         }
         BookTransactionHistory bookTransactionHistory = transactionHistoryRepository
-                .findByBookIdAndOwnerId(bookId, user.getOwner().getId())
+                .findByBookIdAndOwnerId(bookId, user.getId())
                 .orElseThrow(() -> new OperationNotPermittedException(
                                 "The book is not returned yet. You cannot approve its return."));
         bookTransactionHistory.setReturnApproved(true);

@@ -1,6 +1,8 @@
 package com.example.bookmanager.controller;
 
+import com.example.bookmanager.common.PageResponse;
 import com.example.bookmanager.model.FeedbackRequest;
+import com.example.bookmanager.model.FeedbackResponse;
 import com.example.bookmanager.service.FeedbackService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
