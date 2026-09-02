@@ -4,9 +4,11 @@ import com.example.bookmanager.entity.Book;
 import com.example.bookmanager.entity.Feedback;
 import com.example.bookmanager.model.FeedbackRequest;
 import com.example.bookmanager.model.FeedbackResponse;
+import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
+@Service
 public class FeedbackMapper {
 
     public Feedback toFeedback(FeedbackRequest request) {
