@@ -1,0 +1,11 @@
+.login-page {
+  display: grid;
+  min-height: 100vh;
+  padding: 1rem;
+  place-items: center;
+  background: #f4f6f9;
+}
+
+.login-container {
+  width: min(100%, 28rem);
+}
